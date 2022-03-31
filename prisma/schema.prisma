@@ -1,0 +1,77 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 3
+model Employee {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  email       String
+  position    Position?    @relation(fields: [positionId], references: [id])
+  positionId  Int?
+  division    Division?    @relation(fields: [divisionId], references: [id])
+  divisionId  Int?
+  educationDegree    EducationDegree?    @relation(fields: [educationDegreeId], references: [id])
+  educationDegreeId  Int?
+  contracts   Contract[]
+}
+
+model Position {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  employees   Employee[]
+}
+model Division {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  employees   Employee[]
+}
+model EducationDegree {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  employees   Employee[]
+}
+
+model Contract {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  startDate   String?
+  endDate     String?
+  deposit     String?
+  totalMoney  String?
+  employee    Employee?    @relation(fields: [employeeId], references: [id])
+  employeeId  Int?
+  customer    Customer?    @relation(fields: [customerId], references: [id])
+  customerId  Int?
+}
+
+model Customer {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  dayOfBirth  String?
+  idCard      String
+  phone       String?
+  email       String?
+  address     String?
+  contracts   Contract[]
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  isAdmin Boolean @default(value: false)
+  refreshToken String? @default(value: "")
+  createdAt  DateTime @default(now())
+}
